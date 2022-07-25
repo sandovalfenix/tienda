@@ -10,6 +10,14 @@ use Entity\Tables;
  */
 class Productos extends Autoload
 {
+
+	/* Lista de Productos */
+	public function index()
+	{
+		// GET: ./tienda/productos/list
+		$controller = 'productos';
+		include_once('Layout/template.php');
+	}
 	/* Lista de Productos */
 	public function list($params)
 	{
@@ -71,57 +79,6 @@ class Productos extends Autoload
 			'type' => ($delete) ? 'success' : 'warning',
 			'msg' => ($delete) ? 'El Producto fue borrado con éxito. Codigo de registro: ' . md5($row['idProducto'])
 				: 'El Producto no pudo ser borrado.'
-		);
-
-		$this->render(array('alert' => $alert));
-	}
-
-	/* Agregar Categoria */
-	public function addCategoria($params)
-	{
-		// GET: ./tienda/productos/addCategoria?nombre=<<nombre>>
-		$Categorias = new Tables('Categorias');
-		$id = $Categorias->create($params);
-		$alert = array(
-			'id' => $id,
-			'type' => ($id) ? 'success' : 'warning',
-			'msg' => ($id) ? 'El Categoria fue registrado con éxito. Codigo de registro: ' . md5($id)
-				: 'El Categoria no pudo ser registrado'
-		);
-
-		$this->render(array('alert' => $alert));
-	}
-
-	/* Actualizar un Categoria */
-	public function updateCategoria($params)
-	{
-		// GET: ./tienda/productos/updateCategoria?idCategoria=<<idCategoria>>&nombre=<<nombre>>
-		extract($params);
-		$Categorias = new Tables('Categorias');
-		$row = $Categorias->read(array('idCategoria' => $idCategoria), true, 'idCategoria');
-		$update = ($row) ? $Categorias->update($params, array('idCategoria' => $idCategoria)) : false;
-
-		$alert = array(
-			'type' => ($update) ? 'success' : 'warning',
-			'msg' => ($update) ? 'El Categoria fue actualizado con éxito. Codigo de registro: ' . md5($idCategoria)
-				: 'El Categoria no pudo ser actualizado.'
-		);
-
-		$this->render(array('alert' => $alert));
-	}
-
-	/* Eliminar un Categoria */
-	public function deleteCategoria($params)
-	{
-		// GET: ./tienda/productos/deleteCategoria?idCategoria=<<idCategoria>>
-		$Categorias = new Tables('Categorias');
-		$row = $Categorias->read($params, true, 'idCategoria');
-		$delete = ($row) ? $Categorias->delete($params) : false;
-
-		$alert = array(
-			'type' => ($delete) ? 'success' : 'warning',
-			'msg' => ($delete) ? 'El Categoria fue borrado con éxito. Codigo de registro: ' . md5($row['idCategoria'])
-				: 'El Categoria no pudo ser borrado.'
 		);
 
 		$this->render(array('alert' => $alert));

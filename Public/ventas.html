@@ -1,0 +1,107 @@
+<main id="app" class="container-fluid">
+  <div v-show="Object.keys(alert).length" class="row fixed-bottom">
+    <div
+      :class="'alert alert-'+alert.type+' alert-dismissible fade show col-sm-6 offset-md-6'"
+      role="alert"
+    >
+      <i
+        :class="'h4 bi bi-'+ (alert.type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill')"
+      ></i>
+      <strong>{{alert.code}}</strong> {{alert.msg}}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+  </div>
+  <div class="row">
+    <h1 class="mb-5">Lista de Productos</h1>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table class="table table-striped mt-3">
+        <thead>
+          <tr>
+            <td>Nombre</td>
+            <td>Precio</td>
+            <td>IVA %</td>
+            <td>Añadir</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in Productos">
+            <td>{{item.nombre}}</td>
+            <td>
+              $ {{new Intl.NumberFormat("co-CO").format(item.precio)}} COP
+            </td>
+            <td>{{item.iva * 100}} %</td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-link text-info"
+                @click="addCarrito(item)"
+              >
+                <i class="bi bi-cart-plus-fill"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div v-if="Carrito.length" class="col-4">
+      <h1>Carrito <i class="bi bi-cart-fill"></i></h1>
+      <table class="table table-info mt-3">
+        <thead>
+          <tr>
+            <td>Nombre</td>
+            <td>Precio + IVA</td>
+            <td>Catidad</td>
+            <td>Subtotal</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in Carrito">
+            <td>{{item.nombre}}</td>
+            <td>$ {{new Intl.NumberFormat("co-CO").format(item.precioIVA)}}</td>
+            <td>
+              <a
+                href="javascript:;"
+                class="btn btn-link"
+                @click="reducirCarrito(item)"
+              >
+                -
+              </a>
+              {{item.cantidad}}
+              <a
+                href="javascript:;"
+                class="btn btn-link"
+                @click="aumentarCarrito(item)"
+              >
+                +
+              </a>
+            </td>
+            <td>
+              $ {{new Intl.NumberFormat("co-CO").format(item.cantidad *
+              item.precioIVA)}}
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3">Total</td>
+            <td>$ {{new Intl.NumberFormat("co-CO").format(total)}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div colspan="4" class="d-grid gap-2 col-6 mx-auto">
+        <a
+          href="javascrit:;"
+          class="btn btn-primary"
+          @click="addVentas(Carrito)"
+          >Confirmar</a
+        >
+      </div>
+    </div>
+  </div>
+</main>

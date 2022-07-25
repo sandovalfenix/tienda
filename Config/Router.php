@@ -14,7 +14,7 @@ class Router
 
 		$object = new $class_controller;
 
-		$method = (isset($URI[1])) ? ((method_exists($object, $URI[1])) ?  $URI[1] : $this->error_404()) : $this->error_404();
+		$method = (isset($URI[1])) ? ((method_exists($object, $URI[1])) ?  $URI[1] : $this->error_404()) : (method_exists($object, 'index') ? 'index' : $this->error_404());
 		$params = (sizeof($_REQUEST) > 1) ?  array_diff($_REQUEST, array($_REQUEST['URI'])) : array();
 
 		call_user_func(array($object, $method), $params);
