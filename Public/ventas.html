@@ -17,91 +17,76 @@
     </div>
   </div>
   <div class="row">
-    <h1 class="mb-5">Lista de Productos</h1>
+    <h1 class="mb-5">Lista de Ventas</h1>
+    <h4>
+      Total en ventas: $ {{new Intl.NumberFormat("co-CO").format(total)}} COP
+    </h4>
   </div>
   <div class="row">
     <div class="col">
       <table class="table table-striped mt-3">
         <thead>
           <tr>
-            <td>Nombre</td>
-            <td>Precio</td>
-            <td>IVA %</td>
-            <td>Añadir</td>
+            <td>Fecha</td>
+            <td>Cod. Factura</td>
+            <td>Producto</td>
+            <td>Cantidad</td>
+            <td>Precio + IVA</td>
+            <td>SubTotal</td>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in Productos">
-            <td>{{item.nombre}}</td>
+          <tr v-for="item in Ventas">
+            <td>{{item.Factura.fecha}}</td>
             <td>
-              $ {{new Intl.NumberFormat("co-CO").format(item.precio)}} COP
-            </td>
-            <td>{{item.iva * 100}} %</td>
-            <td>
-              <button
-                type="button"
-                class="btn btn-link text-info"
-                @click="addCarrito(item)"
+              <a
+                href="javascript:;"
+                class="btn btn-link"
+                @click="showFactura(item.Factura)"
+                >{{item.Factura.idFactura}}</a
               >
-                <i class="bi bi-cart-plus-fill"></i>
-              </button>
+            </td>
+            <td>{{item.Producto.nombre}}</td>
+            <td>{{item.cantidad}}</td>
+            <td>
+              $ {{new Intl.NumberFormat("co-CO").format(item.Producto.precio *
+              (1 + parseFloat(item.Producto.iva)))}}
+            </td>
+            <td>
+              $ {{new Intl.NumberFormat("co-CO").format((item.Producto.precio *
+              (1 + parseFloat(item.Producto.iva))*item.cantidad))}}
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div v-if="Carrito.length" class="col-4">
-      <h1>Carrito <i class="bi bi-cart-fill"></i></h1>
+    <div v-if="Factura.idFactura" class="col-4">
+      <div class="row">
+        <div class="col-10">
+          <h1>Factura</h1>
+        </div>
+        <div class="col">
+          <a href="javascritp:;" @click="Factura = {}; Vendedor">Cerrar</a>
+        </div>
+      </div>
       <table class="table table-info mt-3">
         <thead>
           <tr>
-            <td>Nombre</td>
-            <td>Precio + IVA</td>
-            <td>Catidad</td>
-            <td>Subtotal</td>
+            <td>Codigo</td>
+            <td>Vendedor</td>
+            <td>Valor Total</td>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in Carrito">
-            <td>{{item.nombre}}</td>
-            <td>$ {{new Intl.NumberFormat("co-CO").format(item.precioIVA)}}</td>
-            <td>
-              <a
-                href="javascript:;"
-                class="btn btn-link"
-                @click="reducirCarrito(item)"
-              >
-                -
-              </a>
-              {{item.cantidad}}
-              <a
-                href="javascript:;"
-                class="btn btn-link"
-                @click="aumentarCarrito(item)"
-              >
-                +
-              </a>
-            </td>
-            <td>
-              $ {{new Intl.NumberFormat("co-CO").format(item.cantidad *
-              item.precioIVA)}}
-            </td>
-          </tr>
           <tr>
-            <td colspan="3">Total</td>
-            <td>$ {{new Intl.NumberFormat("co-CO").format(total)}}</td>
+            <td>{{Factura.idFactura}}</td>
+            <td>{{Vendedor.nombre}} {{Vendedor.apellido}}</td>
+            <td>
+              $ {{new Intl.NumberFormat("co-CO").format(Factura.valorTotal)}}
+            </td>
           </tr>
         </tbody>
       </table>
-
-      <div colspan="4" class="d-grid gap-2 col-6 mx-auto">
-        <a
-          href="javascrit:;"
-          class="btn btn-primary"
-          @click="addVentas(Carrito)"
-          >Confirmar</a
-        >
-      </div>
     </div>
   </div>
 </main>

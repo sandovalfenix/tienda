@@ -8,12 +8,30 @@ use Entity\Tables;
 class Ventas extends Autoload
 {
 
+	/* Lista de Productos */
+	public function index()
+	{
+		// GET: ./tienda/ventas/list
+		$controller = 'ventas';
+		include_once('Layout/template.php');
+	}
+
 	/* Lista de Ventas */
 	public function list($params)
 	{
 		// GET: ./tienda/Ventas/list
 		$Ventas = new Tables('Ventas');
-		$this->render($Ventas->read($params));
+		$array = array_map(function ($venta) {
+			$facturas = new Tables('Facturas');
+			$productos = new Tables('Productos');
+			return array(
+				'idVenta' => $venta['idVenta'],
+				'Factura' => $facturas->read(array('idFactura' => $venta['idFactura']), true),
+				'Producto' => $productos->read(array('idProducto' => $venta['idProducto']), true),
+				'cantidad' => $venta['cantidad']
+			);
+		}, $Ventas->read($params));
+		$this->render($array);
 	}
 
 	public function row($params)

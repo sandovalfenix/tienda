@@ -59,26 +59,28 @@ const app = createApp({
     aumentarCarrito(item) {
       item.cantidad += 1;
     },
-    confirmarCompra() {
+    async confirmarCompra() {
       if (this.Carrito.length > 0) {
-        this.addFactura();
-        /* const data = new FormData();
+        let idFactura = await this.addFactura();
+        const data = new FormData();
 
         this.Carrito.forEach(async (item) => {
-          Object.keys(item).forEach((key) => {
-            data.append(`${key}`, item[key]);
-            console.log(`${key}`, item[key]);
-          });
+          data.append('idProducto', item.idProducto);
+          data.append('idFactura', idFactura);
+          data.append('cantidad', item.cantidad);
+
           let url = 'http://localhost/tienda/ventas/add';
           let response = await fetch(url, {
             method: 'POST',
             body: data,
           });
           console.log(await response.json());
-        }); */
+        });
 
-        /* this.alert.type = 'success';
-        this.alert.message = 'Compra realizada con éxito'; */
+        this.alert.type = 'success';
+        this.alert.message = 'Compra realizada con éxito';
+
+        location.href = 'http://localhost/tienda/ventas';
       } else {
         this.alert.type = 'danger';
         this.alert.message = 'No hay productos en el carrito';
@@ -98,6 +100,7 @@ const app = createApp({
 
       let respuesta = await response.json();
       this.alert = respuesta.alert;
+      return this.alert.id;
     },
   },
 });

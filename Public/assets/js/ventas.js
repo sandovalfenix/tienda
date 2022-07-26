@@ -3,54 +3,39 @@ import { createApp } from 'vue';
 const app = createApp({
   data() {
     return {
-      Productos: [],
-      Carrito: [],
+      Ventas: [],
+      Factura: {},
+      Producto: {},
+      Vendedor: {},
       alert: {},
     };
   },
   mounted() {
-    this.listProductos();
+    this.listVentas();
   },
   computed: {
     total() {
-      return this.Carrito.reduce((total, producto) => {
-        return total + producto.precioIVA * producto.cantidad;
+      return this.Ventas.reduce((total, item) => {
+        let precioIVA =
+          item.Producto.precio * (1 + parseFloat(item.Producto.iva));
+        return total + precioIVA * item.cantidad;
       }, 0);
     },
   },
   methods: {
-    listProductos: async function () {
-      let url = 'http://localhost/tienda/productos/list';
+    listVentas: async function () {
+      let url = 'http://localhost/tienda/ventas/list';
       let response = await fetch(url);
-      this.Productos = await response.json();
+      this.Ventas = await response.json();
     },
-    addCarrito(item) {
-      if (
-        !this.Carrito.find((producto) => {
-          if (producto.idProducto === item.idProducto) {
-            producto.cantidad += 1;
-            return true;
-          } else {
-            return false;
-          }
-        })
-      ) {
-        this.Carrito.push({
-          ...item,
-          cantidad: 1,
-          precioIVA: item.precio * (1 + parseFloat(item.iva)),
-        });
-      }
+    readVendedor: async function (id) {
+      let url = 'http://localhost/tienda/vendedores/row/' + id;
+      let response = await fetch(url);
+      this.Vendedor = await response.json();
     },
-    reducirCarrito(item) {
-      if (item.cantidad > 1) {
-        item.cantidad -= 1;
-      } else {
-        this.Carrito.splice(this.Carrito.indexOf(item), 1);
-      }
-    },
-    aumentarCarrito(item) {
-      item.cantidad += 1;
+    showFactura: function (item) {
+      this.readVendedor(item.idVendedor);
+      this.Factura = item;
     },
   },
 });
